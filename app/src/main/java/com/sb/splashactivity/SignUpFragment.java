@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.speech.tts.TextToSpeech;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -21,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,12 +28,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,7 +53,7 @@ public class SignUpFragment extends Fragment {
     private TextView alreadyHaveAccount;
     private FrameLayout parentFramelayout;
     private EditText email;
-    private EditText fullName;
+    private EditText UserName;
     private EditText password;
     private EditText confirmPass;
 
@@ -109,7 +106,7 @@ public class SignUpFragment extends Fragment {
         parentFramelayout = getActivity().findViewById(R.id.register_framelayout);
 
         email = view.findViewById(R.id.sign_up_email);
-        fullName = view.findViewById(R.id.sign_up_fullname);
+        UserName = view.findViewById(R.id.sign_up_username);
         password = view.findViewById(R.id.sign_up_password);
         confirmPass = view.findViewById(R.id.sign_up_confirm_pass);
 
@@ -157,7 +154,7 @@ public class SignUpFragment extends Fragment {
             }
         });
         //check full Name
-        fullName.addTextChangedListener(new TextWatcher() {
+        UserName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -226,7 +223,7 @@ public class SignUpFragment extends Fragment {
     }
     private void checkInput() {
         if (!TextUtils.isEmpty(email.getText())) {
-            if(!TextUtils.isEmpty(fullName.getText())){
+            if(!TextUtils.isEmpty(UserName.getText())){
                 if(!TextUtils.isEmpty(password.getText()) && password.length()>=8){
                     if(!TextUtils.isEmpty(confirmPass.getText())){
                         signUpBtn.setEnabled(true);
@@ -273,19 +270,34 @@ public class SignUpFragment extends Fragment {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
-
-                                    Map<Object,String> userdata = new HashMap<>();
-                                    userdata.put("fullname", fullName.getText().toString());
-                                    //userdata.put("address", _address.getText().toString());
-                                    //userdata.put("ages", _ages.getText().toString());
-                                    //userdata.put("job", _job.getText().toString());
-                                    //userdata.put("startKM", _startKM.getText().toString());
-                                   //userdata.put("startDate",_startDate.getText().toString());
-                                    firebaseFirestore.collection("USERS")
-                                            .add(userdata)
-                                            .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                    /*
+                                    LoadUser loadUser = new LoadUser(fullName);
+                                    Map<String, Object> data1 = new HashMap<>();
+                                    data1.put(userName, loadUser);
+                                    cities.document(userName).set(data1)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
-                                                public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    Toast.makeText(MainActivity.this,"Uploaded!",Toast.LENGTH_SHORT).show();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(MainActivity.this,"Error!",Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                     */
+                                    //Map<Object,String> userdata = new HashMap<>();
+                                    Map<String, Object> data1 = new HashMap<>();
+                                    UploadUser uploadUser = new UploadUser(UserName.getText().toString(),email.getText().toString());
+                                    CollectionReference cities = firebaseFirestore.collection("USERMAIN");
+                                    data1.put(UserName.getText().toString(), uploadUser);
+                                    cities.document(UserName.getText().toString())
+                                            .set(data1)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
                                                     if(task.isSuccessful()){
                                                         mainIntent();
                                                     }else {

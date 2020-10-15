@@ -21,6 +21,9 @@
             android:icon="@drawable/ic_calendar"
             android:title="Schedule in Advance" />
         <item
+            android:id="@+id/nav_about_us"
+            android:title="Thông tin" />
+        <item
             android:id="@+id/nav_sign_out"
             android:icon="@drawable/ic_logout"
             android:title="Sign Out" />

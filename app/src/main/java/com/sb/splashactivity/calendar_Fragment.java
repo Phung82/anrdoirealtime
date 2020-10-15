@@ -1,5 +1,6 @@
 package com.sb.splashactivity;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,7 +30,7 @@ public class calendar_Fragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private EditText txt_dateTime;
     public calendar_Fragment() {
         // Required empty public constructor
     }
@@ -59,6 +66,36 @@ public class calendar_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calendar, container, false);
+        View view = inflater.inflate(R.layout.fragment_calendar, container, false);
+        txt_dateTime = view.findViewById(R.id.txt_bookdateTime);
+        txt_dateTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Chonngay();
+            }
+        });
+        return view;
+    }
+
+    private void Chonngay() {
+        final Calendar calendar = Calendar.getInstance();
+        int ngay = calendar.get(Calendar.DATE);
+        int thang = calendar.get(Calendar.MONTH);
+        int nam = calendar.get(Calendar.YEAR);
+        DatePickerDialog datePickerDialog =new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                //thoi gian hien tai
+                //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YY");
+                //txt_dateTime.setText(simpleDateFormat.format(calendar.getTime()));
+                //i: nam i1:thang i2: ngay
+                calendar.set(i,i1,i2);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YY");
+                txt_dateTime.setText(simpleDateFormat.format(calendar.getTime()));
+
+
+            }
+        },nam,thang,ngay);
+        datePickerDialog.show();
     }
 }
